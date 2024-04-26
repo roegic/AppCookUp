@@ -72,6 +72,18 @@
 
 
 
+            <TextView
+                android:id="@+id/loading_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Идет загрузка..."
+                android:visibility="visible"
+                android:layout_gravity="center"
+                android:textSize="18sp"/>
 
 
 

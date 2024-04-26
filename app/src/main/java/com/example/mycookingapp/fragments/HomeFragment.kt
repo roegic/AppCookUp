@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ lateinit var mealTypeRV: RecyclerView
 lateinit var timeConfigRV: RecyclerView
 lateinit var btn: Button
 var rootView: View? = null
+private var loadingText: TextView? = null
 
 class HomeFragment : Fragment() {
     val mealTypesList = mutableListOf<String>(
@@ -58,6 +60,8 @@ class HomeFragment : Fragment() {
 
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
         rootView = view
+
+        loadingText = view.findViewById(R.id.loading_text)
 
         mRecipeViewModel = ViewModelProvider(this).get(RecipeViewModel::class.java)
 
@@ -94,6 +98,7 @@ class HomeFragment : Fragment() {
                     for (el in dataset) {
                         all_ingredients += el.products
                     }
+                    loadingText?.visibility = View.GONE
                 }
             })
 
