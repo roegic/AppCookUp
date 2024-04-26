@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MyCookingApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_screen_text">выберите продукты</string>
+    <string name="fridge_search_bar_hint_message">название игредиента</string>
+    <string name="auth_back_btn">назад</string>
+    <string name="article_title">статьи</string>
+    <string name="favourites">избранное</string>
+    <string name="home_title">главная</string>
+    <string name="register_btn">регистрация</string>
+    <string name="login_btn">вход</string>
+</resources>
