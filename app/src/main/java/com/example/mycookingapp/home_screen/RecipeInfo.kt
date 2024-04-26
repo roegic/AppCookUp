@@ -79,7 +79,7 @@ class RecipeInfo : AppCompatActivity() {
 
         val recipeImage: ImageView = findViewById(R.id.recipe_img)
         val url = "https://" + recipe.image_link
-        Glide.with(this).load(url).fitCenter().into(recipeImage)
+        Glide.with(this).load(url).placeholder(R.drawable.ic_downloading_img).fitCenter().into(recipeImage)
 
     }
 
