@@ -66,7 +66,9 @@ class FavouritesFragment : Fragment() {
             view.findViewById<TextView>(R.id.emptyListText).text = "требуется авторизация"
             view.findViewById<TextView>(R.id.emptyListText).visibility = View.VISIBLE
         } else {
-            initializeRv(currentUser, view)
+            if (!::fridgeFoodRV.isInitialized) {
+                initializeRv(currentUser,view)
+            }
         }
 
         val btn = view.findViewById<Button>(R.id.accBtn)
