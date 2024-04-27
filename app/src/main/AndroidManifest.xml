@@ -30,6 +30,9 @@
             android:name=".home_screen.RecipeInfo"
             android:exported="false" />
         <activity
+            android:name=".favourites_screen.LogOutActivity"
+            android:exported="false" />
+        <activity
             android:name=".home_screen.FridgeIngredientResult"
             android:exported="false" />
         <activity

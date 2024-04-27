@@ -10,4 +10,5 @@
     <string name="home_title">главная</string>
     <string name="register_btn">регистрация</string>
     <string name="login_btn">вход</string>
+    <string name="accBtn">аккаунт</string>
 </resources>

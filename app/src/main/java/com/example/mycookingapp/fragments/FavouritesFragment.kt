@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -19,6 +20,8 @@ import com.example.mycookingapp.R
 import com.example.mycookingapp.data.Recipe
 import com.example.mycookingapp.data.RecipeViewModel
 import com.example.mycookingapp.favourites_screen.AuthenticationActivity
+import com.example.mycookingapp.favourites_screen.LogOutActivity
+import com.example.mycookingapp.home_screen.FridgeIngredientResult
 import com.example.mycookingapp.home_screen.RecipeInfo
 import com.example.mycookingapp.home_screen.data.Meal
 import com.example.mycookingapp.home_screen.fridgeResultAdapter
@@ -54,34 +57,51 @@ class FavouritesFragment : Fragment() {
                     if (currentUser != null) {
                         initializeRv(currentUser, view)
                     }
-                } else {
-                    // Авторизация не выполнена
-                    Toast.makeText(
-                        context, "авторизация не выполнена",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
 
 
         var currentUser = auth.currentUser
         if (currentUser == null) {
-            val intent = Intent(activity, AuthenticationActivity::class.java)
-            authenticationLauncher.launch(intent)
+            view.findViewById<TextView>(R.id.emptyListText).text = "требуется авторизация"
+            view.findViewById<TextView>(R.id.emptyListText).visibility = View.VISIBLE
         } else {
             initializeRv(currentUser, view)
+        }
+
+        val btn = view.findViewById<Button>(R.id.accBtn)
+
+
+        btn.setOnClickListener {
+            var curUser = FirebaseAuth.getInstance().currentUser
+            if (curUser == null) {
+                val intent = Intent(activity, AuthenticationActivity::class.java)
+                authenticationLauncher.launch(intent)
+            } else {
+                val intent = Intent(activity, LogOutActivity::class.java)
+                startActivity(intent)
+            }
+            curUser = FirebaseAuth.getInstance().currentUser
+            if (curUser != null) {
+                initializeRv(curUser,view)
+            }
         }
 
         return view
     }
 
-    fun initializeRv(currentUser: FirebaseUser, view: View) {
+    fun initializeRv(currentUser: FirebaseUser?, view: View) {
+        fridgeFoodRV = view.findViewById(R.id.favouritesRV)
+        if (currentUser == null) {
+            return
+        }
 
         val favouritesId = mutableListOf<Int>()
 
         val userId = currentUser.uid
 
         val database = FirebaseDatabase.getInstance().getReference("users")
+        dataset.clear()
 
         database.child(userId).child("favouriteRecipes").addListenerForSingleValueEvent(object :
             ValueEventListener {
@@ -92,6 +112,7 @@ class FavouritesFragment : Fragment() {
                 }
 
                 if (favouritesId.isEmpty()) {
+                    view.findViewById<TextView>(R.id.emptyListText).text = "список рецептов пуст"
                     view.findViewById<TextView>(R.id.emptyListText).visibility = View.VISIBLE
                     fridgeFoodRV.visibility = View.GONE // hide
                 } else {
@@ -114,7 +135,8 @@ class FavouritesFragment : Fragment() {
                                     )
                                 )
                                 if (i == favouritesId.size - 1) { // last element loaded
-                                    fridgeResultAdapter.notifyDataSetChanged()
+                                    //fridgeResultAdapter = fridgeResultAdapter(dataset)
+                                    fridgeResultAdapter.changeData(dataset)
                                 }
                             } else {
                                 // Список избранного пуст
@@ -140,7 +162,7 @@ class FavouritesFragment : Fragment() {
 
         // RV initializer
         fridgeResultAdapter = fridgeResultAdapter(dataset)
-        fridgeFoodRV = view.findViewById(R.id.favouritesRV)
+
         fridgeFoodRV.layoutManager = LinearLayoutManager(context)
 
 
@@ -149,6 +171,26 @@ class FavouritesFragment : Fragment() {
             val intent = Intent(activity, RecipeInfo::class.java)
             intent.putExtra("recipeId", meal.id)
             startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        var currentUser = FirebaseAuth.getInstance().currentUser
+
+
+
+        if (currentUser == null) {
+            requireView().findViewById<TextView>(R.id.emptyListText).text = "требуется авторизация"
+            requireView().findViewById<TextView>(R.id.emptyListText).visibility = View.VISIBLE
+            if (::fridgeFoodRV.isInitialized) {
+                fridgeFoodRV.visibility = View.GONE // hide
+            }
+        } else {
+            if (::fridgeFoodRV.isInitialized) {
+                requireView().findViewById<TextView>(R.id.emptyListText).visibility = View.GONE
+                fridgeFoodRV.visibility = View.VISIBLE // show
+            }
         }
     }
 
