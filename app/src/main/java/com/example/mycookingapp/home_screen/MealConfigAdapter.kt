@@ -64,8 +64,6 @@ class MealConfigAdapter(private var dataset: MutableList<String>) :
     }
 
     fun makeSearchRequest(): String {
-        val t = selectedType
-        selectedType = ""
-        return t
+        return selectedType
     }
 }
