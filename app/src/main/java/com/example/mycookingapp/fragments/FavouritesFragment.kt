@@ -90,12 +90,8 @@ class FavouritesFragment : Fragment() {
         return view
     }
 
-    fun initializeRv(currentUser: FirebaseUser?, view: View) {
+    fun initializeRv(currentUser: FirebaseUser, view: View) {
         fridgeFoodRV = view.findViewById(R.id.favouritesRV)
-        if (currentUser == null) {
-            return
-        }
-
         val favouritesId = mutableListOf<Int>()
 
         val userId = currentUser.uid
@@ -178,8 +174,6 @@ class FavouritesFragment : Fragment() {
         super.onResume()
         var currentUser = FirebaseAuth.getInstance().currentUser
 
-
-
         if (currentUser == null) {
             requireView().findViewById<TextView>(R.id.emptyListText).text = "требуется авторизация"
             requireView().findViewById<TextView>(R.id.emptyListText).visibility = View.VISIBLE
@@ -187,7 +181,9 @@ class FavouritesFragment : Fragment() {
                 fridgeFoodRV.visibility = View.GONE // hide
             }
         } else {
-            if (::fridgeFoodRV.isInitialized) {
+            if (!::fridgeFoodRV.isInitialized) {
+                initializeRv(currentUser,requireView())
+            } else if (::fridgeFoodRV.isInitialized) {
                 requireView().findViewById<TextView>(R.id.emptyListText).visibility = View.GONE
                 fridgeFoodRV.visibility = View.VISIBLE // show
             }
